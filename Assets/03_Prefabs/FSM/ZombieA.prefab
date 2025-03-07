@@ -44,22 +44,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 3509390862357459790}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48997eab93f453d46960d0b192362e56, type: 3}
+  m_Script: {fileID: 11500000, guid: 53ac0ce5f9f447a4eb8563b5f192d1c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxSpeed: 10
-  _seekFactor: 1
-  _wanderFactor: 0
-  _wanderDistance: 2
-  _wanderRadius: 4
-  _wanderRange: 10
-  _avoidanceFactor: 1
-  _avoidanceMask:
+  maxSpeed: 10
+  steeringDamp: 0.5
+  seekFactor: 1
+  fleeFactor: 1
+  arrivalRadius: 10
+  avoidanceFactor: 1
+  avoidanceMask:
     serializedVersion: 2
-    m_Bits: 64
-  _avoidanceDistance: 50
-  _avoidanceForce: 0
-  _avoidanceRadius: 2
+    m_Bits: 0
+  avoidanceDistance: 10
+  avoidanceForce: 0
+  avoidanceRadius: 0
+  playerHasGun: 0
 --- !u!54 &2003943044414472021
 Rigidbody:
   m_ObjectHideFlags: 0

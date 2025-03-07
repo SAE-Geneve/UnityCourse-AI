@@ -4,12 +4,6 @@ using UnityEngine.Serialization;
 public class SteeringBehaviour : MonoBehaviour
 {
     
-    private Rigidbody _rb;
-    private GameObject _player;
-    private GameObject _preedator;
-
-    public bool playerHasGun = false;
-    
     [SerializeField] private float maxSpeed = 10f;
     [SerializeField] private float steeringDamp = 0.5f;
     
@@ -21,6 +15,23 @@ public class SteeringBehaviour : MonoBehaviour
     
     [Header("Arrival")]
     [SerializeField] private float arrivalRadius = 10f;
+    
+    [Header("Avoidance")]
+    [SerializeField] [Range(0, 1)] private float avoidanceFactor = 1f;
+    [SerializeField] private LayerMask avoidanceMask;
+    [SerializeField] private float avoidanceDistance = 10;
+    [SerializeField] private float avoidanceForce;
+    [SerializeField] private float avoidanceRadius;
+    
+    private Vector3 _avoidPoint;
+    private Vector3 _avoidHitPoint;
+    
+    private Rigidbody _rb;
+    private GameObject _player;
+    private GameObject _preedator;
+
+    public bool playerHasGun = false;
+    
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -44,9 +55,10 @@ public class SteeringBehaviour : MonoBehaviour
             steeringResult += seekFactor * Seek(_player.transform.position);
         }
         
-        steeringResult += fleeFactor * Flee(_preedator.transform.position);
+        if(_preedator != null)
+            steeringResult += fleeFactor * Flee(_preedator.transform.position);
         
-        //steeringResult += SeekAndArrival();
+        steeringResult += avoidanceFactor * ObstacleAvoidance();
         
         _rb.linearVelocity = steeringResult;
         
@@ -56,6 +68,21 @@ public class SteeringBehaviour : MonoBehaviour
         
     }
 
+    private void OnDrawGizmos()
+    {
+        if (_rb != null && avoidanceFactor > 0)
+        {
+            //Gizmos.DrawWireSphere(transform.position, _avoidanceRadius);
+            if (Vector3.Distance(_avoidPoint, transform.position) > Mathf.Epsilon && Vector3.Distance(_avoidHitPoint, transform.position) > Mathf.Epsilon)
+            {
+                Gizmos.DrawWireSphere(_avoidPoint, avoidanceRadius);
+                Gizmos.DrawWireSphere(_avoidHitPoint, avoidanceRadius);
+            }
+        }
+
+
+    }
+    
     Vector3 Seek(Vector3 targetPosition)
     {
         
@@ -112,6 +139,58 @@ public class SteeringBehaviour : MonoBehaviour
         Debug.DrawRay(transform.position + actualVelocity, steeringForce, Color.green);
         
         return steeringForce;
+
+    }
+    
+    Vector3 ObstacleAvoidance()
+    {
+        if (avoidanceFactor == 0)
+            return Vector3.zero;
+
+        Vector3 actualVelocity = _rb.linearVelocity;
+        if (actualVelocity.magnitude < 0.001f)
+            return Vector3.zero;
+
+        if (Physics.SphereCast(transform.position,
+            avoidanceRadius,
+            actualVelocity.normalized,
+            out RaycastHit hit,
+            avoidanceDistance,
+            avoidanceMask))
+        {
+
+            Debug.Log("Obstacle Avoided : " + hit.collider.gameObject.name);
+
+            Vector3 hitVector = hit.point - transform.position;
+            _avoidPoint = hit.point + Vector3.Reflect(hitVector, hit.normal).normalized * avoidanceForce;
+            _avoidHitPoint = hit.point;
+            
+            Vector3 desiredVelocity = _avoidPoint - transform.position;
+            Vector3 steeringForce = desiredVelocity - actualVelocity;
+
+
+            // Debug 1/2
+            Debug.DrawRay(transform.position, hitVector, Color.green);
+            Debug.DrawRay(hit.point, hit.normal * 5f, Color.cyan);
+            Debug.DrawRay(hit.point, _avoidPoint - hit.point, Color.yellow);
+            
+            // Debug
+            // Debug draws
+            Debug.DrawRay(transform.position, desiredVelocity, Color.magenta);
+            Debug.DrawRay(transform.position, actualVelocity, Color.red);
+            Debug.DrawRay(transform.position + actualVelocity, steeringForce, Color.green);
+            
+            return steeringForce;
+
+
+        }
+        else
+        {
+            _avoidPoint = transform.position;
+            _avoidHitPoint = transform.position;
+        }
+
+        return Vector3.zero;
 
     }
 }
