@@ -28,13 +28,20 @@ public class RTSController : MonoBehaviour
         Mouse mouse = Mouse.current;
         if (mouse.leftButton.wasPressedThisFrame)
         {
-            Ray ray = Camera.main.ScreenPointToRay(mouse.position.value);
-            if (Physics.Raycast(ray, out RaycastHit hit))
+            Vector2 mousePos = mouse.position.value;
+            Debug.Log("Mouse position : " + mousePos);
+
+            if (mousePos.x >= 0 && mousePos.x <= Screen.width &&
+                mousePos.y >= 0 && mousePos.y <= Screen.height)
             {
-                if (CheckProximity(hit.point) == false)
+                Ray ray = Camera.main.ScreenPointToRay(mousePos);
+                if (Physics.Raycast(ray, out RaycastHit hit))
                 {
-                    GameObject newPoint = Instantiate(point, hit.point, Quaternion.identity);
-                    AddPoint(newPoint.transform);
+                    if (CheckProximity(hit.point) == false)
+                    {
+                        GameObject newPoint = Instantiate(point, hit.point, Quaternion.identity);
+                        AddPoint(newPoint.transform);
+                    }
                 }
             }
         }
@@ -73,12 +80,12 @@ public class RTSController : MonoBehaviour
             Destroy(oldPoint);
             return transform;
         }
-        
+
         GameObject newPoint = pathPoints.Dequeue().gameObject;
-        
+
         Destroy(oldPoint);
         oldPoint = newPoint;
-        
+
         return newPoint.transform;
 
     }

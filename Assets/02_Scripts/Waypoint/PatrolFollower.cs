@@ -30,7 +30,7 @@ public class PatrolFollower : MonoBehaviour
                 distance = _currentPoint.transform.position - transform.position;
             }
             
-            if (distance.magnitude < 0.1f)
+            if (distance.magnitude < pointDistance)
             {
                 _currentPoint = patrol.GetNextPoint();
             }

@@ -117,7 +117,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5129834421732081013}
-  - component: {fileID: 8901451470608684617}
   m_Layer: 0
   m_Name: RTSPathPoint
   m_TagString: Untagged
@@ -141,15 +140,3 @@ Transform:
   - {fileID: 6071522834534998631}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8901451470608684617
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6117269156406327036}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c4175f5ed9786b4b9995cb51c3b1eba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
