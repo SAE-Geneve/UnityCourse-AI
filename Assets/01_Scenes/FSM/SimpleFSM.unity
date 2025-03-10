@@ -11403,6 +11403,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8642765788971354449, guid: 90cbd7ae76860994ba4e3664d7d407d3, type: 3}
   m_PrefabInstance: {fileID: 1253127109}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1302812680 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2422372685799306558, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
+  m_PrefabInstance: {fileID: 2579565686203031392}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22efcec880a4c5240aee849664a26f6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1316500480
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12805,8 +12816,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a02d2cbd68aef9242a70c9a1022d25ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  point: {fileID: 6117269156406327036, guid: 41a7388cac893b746b52d43eab37d985, type: 3}
-  _patrolPointIndex: 0
+  rtsPoint: {fileID: 6117269156406327036, guid: 41a7388cac893b746b52d43eab37d985, type: 3}
+  characterOriented: {fileID: 709475230}
+  thrower: {fileID: 1524891320}
 --- !u!135 &1524891332
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -17074,6 +17086,78 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8642765788971354449, guid: 90cbd7ae76860994ba4e3664d7d407d3, type: 3}
   m_PrefabInstance: {fileID: 1892256157}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1925200726
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1146789469525176941, guid: ea1959ec91667974399ae1ddc5212b43, type: 3}
+      propertyPath: m_Name
+      value: MolotovCocktail
+      objectReference: {fileID: 0}
+    - target: {fileID: 5522169814335356877, guid: ea1959ec91667974399ae1ddc5212b43, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6646267593775018228, guid: ea1959ec91667974399ae1ddc5212b43, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.136354
+      objectReference: {fileID: 0}
+    - target: {fileID: 6646267593775018228, guid: ea1959ec91667974399ae1ddc5212b43, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.81
+      objectReference: {fileID: 0}
+    - target: {fileID: 6646267593775018228, guid: ea1959ec91667974399ae1ddc5212b43, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 7.673115
+      objectReference: {fileID: 0}
+    - target: {fileID: 6646267593775018228, guid: ea1959ec91667974399ae1ddc5212b43, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6646267593775018228, guid: ea1959ec91667974399ae1ddc5212b43, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6646267593775018228, guid: ea1959ec91667974399ae1ddc5212b43, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6646267593775018228, guid: ea1959ec91667974399ae1ddc5212b43, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6646267593775018228, guid: ea1959ec91667974399ae1ddc5212b43, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6646267593775018228, guid: ea1959ec91667974399ae1ddc5212b43, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6646267593775018228, guid: ea1959ec91667974399ae1ddc5212b43, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ea1959ec91667974399ae1ddc5212b43, type: 3}
+--- !u!114 &1998121541 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 109312472085456992, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
+  m_PrefabInstance: {fileID: 2579565686203031392}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dae3a662a4a4ad1478cf49ab849e956b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2042286561
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18066,6 +18150,22 @@ PrefabInstance:
       propertyPath: tagField
       value: Molotov
       objectReference: {fileID: 0}
+    - target: {fileID: 109312472085456992, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
+      propertyPath: layerMask.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 770989415015332088, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
+      propertyPath: maxSpeed
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 796279339493505637, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
+      propertyPath: playerSensor
+      value: 
+      objectReference: {fileID: 1302812680}
+    - target: {fileID: 796279339493505637, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
+      propertyPath: molotovSensor
+      value: 
+      objectReference: {fileID: 1998121541}
     - target: {fileID: 1186684117298704283, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10.7
@@ -18108,7 +18208,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2422372685799306558, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
       propertyPath: radius
-      value: 20
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2422372685799306558, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
       propertyPath: distance
@@ -18120,7 +18220,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2422372685799306558, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
       propertyPath: targetMaxTime
-      value: 1
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 2422372685799306558, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
       propertyPath: layerMask.m_Bits
@@ -18146,3 +18246,4 @@ SceneRoots:
   - {fileID: 1607088934}
   - {fileID: 1726863811}
   - {fileID: 520052035}
+  - {fileID: 1925200726}

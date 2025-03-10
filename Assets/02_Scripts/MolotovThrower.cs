@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,17 +8,15 @@ public class MolotovThrower : MonoBehaviour
     [SerializeField] private Transform throwPoint;
     [SerializeField] private float throwForce;
     [SerializeField] private Molotov cocktail;
-    
-    public void OnShoot(InputAction.CallbackContext ctx)
+
+    public void ThrowMolotov()
     {
-        if (ctx.started)
+
+        // Throw object
+        Molotov c = Instantiate(cocktail, throwPoint.position, throwPoint.rotation);
+        if (c.TryGetComponent(out Rigidbody rb))
         {
-            Molotov c = Instantiate(cocktail, throwPoint.position, throwPoint.rotation);
-            if (c.TryGetComponent(out Rigidbody rb))
-            {
-                rb.AddForce(throwPoint.transform.forward * throwForce, ForceMode.Impulse);
-            }
+            rb.AddForce(throwPoint.transform.forward * throwForce, ForceMode.Impulse);
         }
-        
     }
 }

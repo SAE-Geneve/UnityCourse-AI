@@ -1,38 +1,83 @@
 using System;
-using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.UIElements;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class RadiusSensor : MonoBehaviour
 {
 
+    [SerializeField] private float radius;
+    [SerializeField] private LayerMask layerMask;
     [SerializeField] private string tagField;
 
-    private HashSet<Transform> _sendored = new HashSet<Transform>();
-    
-   private void OnDrawGizmos()
+    public bool HasDetected { get; set; }
+    public Vector3 Center { get; private set; }
+
+    private Transform[] _sendoredItems = Array.Empty<Transform>();
+
+
+    private void FixedUpdate()
     {
-        if (_sendored.Count > 0)
+        Collider[] colliders = Physics.OverlapSphere(transform.position, radius, layerMask);
+
+        if (colliders.Length > 0)
         {
-            Gizmos.color = new Color(1.0f, 0.5f, 0.0f); // Unity uses float-based Color
-            Gizmos.DrawCube(transform.position + new Vector3(0, 7.5f, 0), new Vector3(1,1,1));
+            _sendoredItems = colliders.Where(c => c.CompareTag(tagField)).Select(c => c.transform).ToArray();
+            Center = RecalculateCenter();
         }
+        else
+        {
+            _sendoredItems = Array.Empty<Transform>();
+        }
+        
+        HasDetected = _sendoredItems.Length > 0;
+        
+    }
+    private void OnDrawGizmos()
+    {
+        if (_sendoredItems.Length > 0)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawCube(transform.position + new Vector3(0, 7.5f, 0), new Vector3(1, 1, 1));
+        }
+        else
+        {
+            Gizmos.color = Color.red;
+        }
+        Gizmos.DrawWireSphere(transform.position, radius);
     }
 
-    private void OnTriggerEnter(Collider other)
+    // private void OnTriggerEnter(Collider other)
+    // {
+    //     if (other.CompareTag(tagField))
+    //     {
+    //         _sendoredItems.Add(other.transform);
+    //         Center = RecalculateCenter();
+    //     }
+    // }
+    // private void OnTriggerExit(Collider other)
+    // {
+    //     if (other.CompareTag(tagField))
+    //     {
+    //         _sendoredItems.Remove(other.transform);
+    //         Center = RecalculateCenter();
+    //     }
+    // }
+
+    private Vector3 RecalculateCenter()
     {
-        if (other.CompareTag(tagField))
+        Vector3 center = Vector3.zero;
+
+        if (_sendoredItems.Length > 0)
         {
-            _sendored.Add(other.transform);
+            foreach (Transform sendoredItem in _sendoredItems)
+            {
+                if (sendoredItem) center += sendoredItem.position;
+            }
+
+            center /= _sendoredItems.Length;
         }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag(tagField))
-        {
-            _sendored.Remove(other.transform);
-        }
+
+        return center;
+
     }
 }

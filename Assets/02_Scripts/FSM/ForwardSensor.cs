@@ -13,7 +13,7 @@ public class ForwardSensor : MonoBehaviour
     [SerializeField] private string tagField;
     [SerializeField] private double targetMaxTime;
 
-    [HideInInspector] public Transform target;
+    [HideInInspector] public Transform Target;
 
     private double _targetDuration;
 
@@ -26,27 +26,35 @@ public class ForwardSensor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Transform runtimeTarget = null;
         if (Physics.SphereCast(transform.position, radius, transform.forward, out RaycastHit hit, distance, layerMask))
         {
             if (hit.collider.CompareTag(tagField))
             {
-                target = hit.transform;
-                _targetDuration = 0;
+                runtimeTarget = hit.transform;
             }
         }
 
-        if (_targetDuration > targetMaxTime)
-            target = null;
-        _targetDuration += Time.deltaTime;
-        
+        if (runtimeTarget)
+        {
+            Target = runtimeTarget;
+            _targetDuration = 0;
+        }
+        else if(Target)
+        {
+            _targetDuration += Time.deltaTime;
+            if (_targetDuration > targetMaxTime)
+                Target = null;
+        }
+
     }
 
     private void OnDrawGizmos()
     {
-        if (target != null)
+        if (Target != null)
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(target.position, radius);
+            Gizmos.DrawWireSphere(Target.position, radius);
         }
         else
         {

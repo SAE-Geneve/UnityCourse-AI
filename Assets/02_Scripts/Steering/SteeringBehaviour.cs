@@ -31,15 +31,24 @@ public class SteeringBehaviour : MonoBehaviour
     [SerializeField] private float avoidanceForce;
     [SerializeField] private float avoidanceRadius;
 
-    public GameObject SteeringTarget { get; private set; }
-    public float SeekFactor => seekFactor;
-    public float FleeFactor => fleeFactor;
+    public Transform SteeringTarget { get; set; }
+    public float SeekFactor    {
+        get => seekFactor;
+        set => seekFactor = value;
+    }
+    public float FleeFactor    {
+        get => fleeFactor;
+        set => fleeFactor = value;
+    }
     public float WanderFactor
     {
         get => wanderFactor;
         set => wanderFactor = value;
     }
-    public float AvoidanceFactor => avoidanceFactor;
+    public float AvoidanceFactor    {
+        get => avoidanceFactor;
+        set => avoidanceFactor = value;
+    }
 
 
     // Avoid fields
@@ -57,8 +66,7 @@ public class SteeringBehaviour : MonoBehaviour
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
-        SteeringTarget = GameObject.FindGameObjectWithTag("Player");
-
+        
         _wanderAngle = Random.Range(-180, 180);
 
     }
@@ -69,9 +77,9 @@ public class SteeringBehaviour : MonoBehaviour
         Vector3 steeringResult = Vector3.zero;
 
         if (seekFactor > 0) 
-            steeringResult += seekFactor * Seek(SteeringTarget.transform.position);
+            steeringResult += seekFactor * Seek(SteeringTarget.position);
         if (fleeFactor > 0) 
-            steeringResult += fleeFactor * Flee(SteeringTarget.transform.position);
+            steeringResult += fleeFactor * Flee(SteeringTarget.position);
         if (wanderFactor > 0) 
             steeringResult += wanderFactor * Wander();
         if (avoidanceFactor > 0) 
@@ -83,9 +91,11 @@ public class SteeringBehaviour : MonoBehaviour
         if (_rb.linearVelocity.magnitude > maxSpeed)
             _rb.linearVelocity = _rb.linearVelocity.normalized * maxSpeed;
         
-        Quaternion lookRotation = Quaternion.LookRotation(_rb.linearVelocity);
-        _rb.rotation = Quaternion.Slerp(_rb.rotation, lookRotation, rotationCompensation);
-
+        if(_rb.linearVelocity.sqrMagnitude > Mathf.Epsilon)
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(_rb.linearVelocity);
+            _rb.rotation = Quaternion.Slerp(_rb.rotation, lookRotation, rotationCompensation);
+        }
     }
 
     private void OnDrawGizmos()

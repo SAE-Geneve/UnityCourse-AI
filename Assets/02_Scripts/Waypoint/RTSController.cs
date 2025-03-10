@@ -3,17 +3,21 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 public class RTSController : MonoBehaviour
 {
-    [SerializeField] private GameObject point;
+    [SerializeField] private GameObject rtsPoint;
+    [SerializeField] private Transform characterOriented;
+    [SerializeField] private MolotovThrower thrower;
 
     private NavMeshAgent _agent;
     private Animator _animator;
 
-    public Queue<Transform> pathPoints = new Queue<Transform>();
-    private GameObject oldPoint;
-    public int _patrolPointIndex;
+    // ReSharper disable once MemberCanBePrivate.Global
+    public readonly Queue<Transform> PathPoints = new Queue<Transform>();
+
+    private GameObject _oldPoint;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -26,25 +30,36 @@ public class RTSController : MonoBehaviour
     void Update()
     {
         Mouse mouse = Mouse.current;
-        if (mouse.leftButton.wasPressedThisFrame)
-        {
-            Vector2 mousePos = mouse.position.value;
-            Debug.Log("Mouse position : " + mousePos);
+        Vector2 mousePos = mouse.position.value;
 
+        if (mouse.leftButton.wasPressedThisFrame || mouse.rightButton.wasPressedThisFrame)
+        {
             if (mousePos.x >= 0 && mousePos.x <= Screen.width &&
                 mousePos.y >= 0 && mousePos.y <= Screen.height)
             {
                 Ray ray = Camera.main.ScreenPointToRay(mousePos);
                 if (Physics.Raycast(ray, out RaycastHit hit))
                 {
-                    if (CheckProximity(hit.point) == false)
+                    if (mouse.leftButton.wasPressedThisFrame)
                     {
-                        GameObject newPoint = Instantiate(point, hit.point, Quaternion.identity);
-                        AddPoint(newPoint.transform);
+                        // Place a point
+                        if (CheckProximity(hit.point) == false)
+                        {
+                            GameObject newPoint = Instantiate(rtsPoint, hit.point, Quaternion.identity);
+                            AddPoint(newPoint.transform);
+                        }
                     }
+                    if (mouse.rightButton.wasPressedThisFrame)
+                    {
+                        // Orient character AND throw point
+                        characterOriented.rotation = Quaternion.LookRotation(new Vector3(hit.point.x, 0, hit.point.z));
+                        thrower.ThrowMolotov();
+                    }
+
                 }
             }
         }
+
 
         if ((_agent.destination - transform.position).magnitude > _agent.stoppingDistance)
         {
@@ -65,26 +80,26 @@ public class RTSController : MonoBehaviour
 
     private bool CheckProximity(Vector3 mouseClick)
     {
-        return pathPoints.ToList().Exists(p => Vector3.Distance(p.position, mouseClick) < 5f);
+        return PathPoints.ToList().Exists(p => Vector3.Distance(p.position, mouseClick) < 5f);
     }
 
     private void AddPoint(Transform pathPoint)
     {
-        pathPoints.Enqueue(pathPoint);
+        PathPoints.Enqueue(pathPoint);
     }
 
     private Transform GetNextPoint()
     {
-        if (pathPoints.Count == 0)
+        if (PathPoints.Count == 0)
         {
-            Destroy(oldPoint);
+            Destroy(_oldPoint);
             return transform;
         }
 
-        GameObject newPoint = pathPoints.Dequeue().gameObject;
+        GameObject newPoint = PathPoints.Dequeue().gameObject;
 
-        Destroy(oldPoint);
-        oldPoint = newPoint;
+        Destroy(_oldPoint);
+        _oldPoint = newPoint;
 
         return newPoint.transform;
 
