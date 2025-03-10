@@ -6,6 +6,7 @@ public class SteeringBehaviour : MonoBehaviour
 
     [SerializeField] private float maxSpeed = 10f;
     [SerializeField] private float steeringDamp = 0.5f;
+    [SerializeField] private float rotationCompensation = 0.5f;
 
     [Header("Seek")]
     [SerializeField] [Range(0, 1)] private float seekFactor = 1f;
@@ -30,6 +31,17 @@ public class SteeringBehaviour : MonoBehaviour
     [SerializeField] private float avoidanceForce;
     [SerializeField] private float avoidanceRadius;
 
+    public GameObject SteeringTarget { get; private set; }
+    public float SeekFactor => seekFactor;
+    public float FleeFactor => fleeFactor;
+    public float WanderFactor
+    {
+        get => wanderFactor;
+        set => wanderFactor = value;
+    }
+    public float AvoidanceFactor => avoidanceFactor;
+
+
     // Avoid fields
     private Vector3 _avoidPoint;
     private Vector3 _avoidHitPoint;
@@ -39,27 +51,27 @@ public class SteeringBehaviour : MonoBehaviour
     private Vector3 _wanderCenter;
 
     private Rigidbody _rb;
-    private GameObject _steeringTarget;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
         _rb = GetComponent<Rigidbody>();
-        _steeringTarget = GameObject.FindGameObjectWithTag("Player");
+        SteeringTarget = GameObject.FindGameObjectWithTag("Player");
 
         _wanderAngle = Random.Range(-180, 180);
 
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         Vector3 steeringResult = Vector3.zero;
 
         if (seekFactor > 0) 
-            steeringResult += seekFactor * Seek(_steeringTarget.transform.position);
+            steeringResult += seekFactor * Seek(SteeringTarget.transform.position);
         if (fleeFactor > 0) 
-            steeringResult += fleeFactor * Flee(_steeringTarget.transform.position);
+            steeringResult += fleeFactor * Flee(SteeringTarget.transform.position);
         if (wanderFactor > 0) 
             steeringResult += wanderFactor * Wander();
         if (avoidanceFactor > 0) 
@@ -70,6 +82,9 @@ public class SteeringBehaviour : MonoBehaviour
         // Max speed
         if (_rb.linearVelocity.magnitude > maxSpeed)
             _rb.linearVelocity = _rb.linearVelocity.normalized * maxSpeed;
+        
+        Quaternion lookRotation = Quaternion.LookRotation(_rb.linearVelocity);
+        _rb.rotation = Quaternion.Slerp(_rb.rotation, lookRotation, rotationCompensation);
 
     }
 
@@ -93,7 +108,8 @@ public class SteeringBehaviour : MonoBehaviour
 
     }
 
-    Vector3 Seek(Vector3 targetPosition)
+    #region Steering Forces Implementation
+    private Vector3 Seek(Vector3 targetPosition)
     {
 
         Vector3 actualVelocity = _rb.linearVelocity;
@@ -110,7 +126,7 @@ public class SteeringBehaviour : MonoBehaviour
 
     }
 
-    Vector3 Flee(Vector3 targetPosition)
+    private Vector3 Flee(Vector3 targetPosition)
     {
 
         Vector3 actualVelocity = _rb.linearVelocity;
@@ -127,7 +143,7 @@ public class SteeringBehaviour : MonoBehaviour
 
     }
 
-    Vector3 SeekAndArrival(Vector3 targetPosition)
+    private Vector3 SeekAndArrival(Vector3 targetPosition)
     {
 
         Vector3 actualVelocity = _rb.linearVelocity;
@@ -147,7 +163,7 @@ public class SteeringBehaviour : MonoBehaviour
     }
 
 
-    Vector3 ObstacleAvoidance()
+    private Vector3 ObstacleAvoidance()
     {
         if (avoidanceFactor == 0)
             return Vector3.zero;
@@ -199,7 +215,7 @@ public class SteeringBehaviour : MonoBehaviour
 
     }
 
-    Vector3 Wander()
+    private Vector3 Wander()
     {
 
         Vector3 velocity = _rb.linearVelocity.normalized;
@@ -223,4 +239,6 @@ public class SteeringBehaviour : MonoBehaviour
         return seekVelocity;
 
     }
+    
+    #endregion
 }

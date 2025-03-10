@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ground
   - Preedator
+  - Molotov
   layers:
   - Default
   - TransparentFX
@@ -15,7 +16,7 @@ TagManager:
   - UI
   - Environnement
   - Obstacles
-  - 
+  - AIDetectables
   - 
   - 
   - 

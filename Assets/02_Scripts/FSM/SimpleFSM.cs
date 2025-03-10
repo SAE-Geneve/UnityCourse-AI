@@ -4,26 +4,27 @@ using UnityEngine;
 public class SimpleFSM : MonoBehaviour
 {
 
-    enum State
+    public enum State
     {
         Patrol,
         Chase,
         Flee
     }
 
-    private State _currentState = State.Patrol;
+    [SerializeField] private State currentState = State.Patrol;
+    private SteeringBehaviour _motion;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
+        _motion = GetComponent<SteeringBehaviour>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        CheckTransitions(_currentState);
-        ExecuteState(_currentState);
+        CheckTransitions(currentState);
+        ExecuteState(currentState);
     }
     // FSM Scripts
     private void CheckTransitions(State currentState)
@@ -40,6 +41,9 @@ public class SimpleFSM : MonoBehaviour
     }
     private void ExecuteState(State currentState)
     {
+        
+        Debug.Log("Current State : " + currentState);
+        
         switch (currentState)
         {
             case State.Patrol:
@@ -53,15 +57,16 @@ public class SimpleFSM : MonoBehaviour
     
     private void ChangeState(State newState)
     {
-        ExitState(_currentState);
-        _currentState = newState;
-        EnterState(_currentState);
+        ExitState(currentState);
+        currentState = newState;
+        EnterState(currentState);
     }
     private void EnterState(State currentState)
     {
         switch (currentState)
         {
             case State.Patrol:
+                _motion.WanderFactor = 1;
                 break;
             case State.Chase:
                 break;
@@ -74,6 +79,7 @@ public class SimpleFSM : MonoBehaviour
         switch (currentState)
         {
             case State.Patrol:
+                _motion.WanderFactor = 0;
                 break;
             case State.Chase:
                 break;
