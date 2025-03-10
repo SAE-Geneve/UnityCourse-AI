@@ -8,13 +8,20 @@ public class SteeringBehaviour : MonoBehaviour
     [SerializeField] private float steeringDamp = 0.5f;
 
     [Header("Seek")]
-    [SerializeField] private float seekFactor = 1f;
+    [SerializeField] [Range(0, 1)] private float seekFactor = 1f;
 
     [Header("Flee")]
-    [SerializeField] private float fleeFactor = 1f;
+    [SerializeField] [Range(0, 1)] private float fleeFactor = 1f;
 
     [Header("Arrival")]
     [SerializeField] private float arrivalRadius = 10f;
+
+    [FormerlySerializedAs("_wanderFactor")]
+    [Header("Wander")]
+    [SerializeField] [Range(0, 1)] private float wanderFactor = 1f;
+    [SerializeField] private float wanderDistance;
+    [SerializeField] private float wanderRadius;
+    [SerializeField] private float wanderRange = 180;
 
     [Header("Avoidance")]
     [SerializeField] [Range(0, 1)] private float avoidanceFactor = 1f;
@@ -23,8 +30,13 @@ public class SteeringBehaviour : MonoBehaviour
     [SerializeField] private float avoidanceForce;
     [SerializeField] private float avoidanceRadius;
 
+    // Avoid fields
     private Vector3 _avoidPoint;
     private Vector3 _avoidHitPoint;
+
+    // Wander fields
+    private float _wanderAngle;
+    private Vector3 _wanderCenter;
 
     private Rigidbody _rb;
     private GameObject _steeringTarget;
@@ -34,16 +46,24 @@ public class SteeringBehaviour : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
         _steeringTarget = GameObject.FindGameObjectWithTag("Player");
+
+        _wanderAngle = Random.Range(-180, 180);
+
     }
 
     // Update is called once per frame
     void Update()
     {
         Vector3 steeringResult = Vector3.zero;
-        
-        steeringResult += seekFactor * Seek(_steeringTarget.transform.position);
-        steeringResult += fleeFactor * Flee(_steeringTarget.transform.position);
-        steeringResult += avoidanceFactor * ObstacleAvoidance();
+
+        if (seekFactor > 0) 
+            steeringResult += seekFactor * Seek(_steeringTarget.transform.position);
+        if (fleeFactor > 0) 
+            steeringResult += fleeFactor * Flee(_steeringTarget.transform.position);
+        if (wanderFactor > 0) 
+            steeringResult += wanderFactor * Wander();
+        if (avoidanceFactor > 0) 
+            steeringResult += avoidanceFactor * ObstacleAvoidance();
 
         _rb.linearVelocity = steeringResult;
 
@@ -55,7 +75,7 @@ public class SteeringBehaviour : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (_rb != null && avoidanceFactor > 0)
+        if (avoidanceFactor > 0)
         {
             //Gizmos.DrawWireSphere(transform.position, _avoidanceRadius);
             if (Vector3.Distance(_avoidPoint, transform.position) > Mathf.Epsilon &&
@@ -66,18 +86,20 @@ public class SteeringBehaviour : MonoBehaviour
             }
         }
 
+        if (wanderFactor > 0)
+        {
+            Gizmos.DrawWireSphere(_wanderCenter, wanderRadius);
+        }
 
     }
 
     Vector3 Seek(Vector3 targetPosition)
     {
 
-        Vector3 steeringForce = Vector3.zero;
-
         Vector3 actualVelocity = _rb.linearVelocity;
         Vector3 desiredVelocity = (targetPosition - transform.position).normalized * maxSpeed;
 
-        steeringForce = (desiredVelocity - actualVelocity) * steeringDamp;
+        Vector3 steeringForce = (desiredVelocity - actualVelocity) * steeringDamp;
 
         // Debug draws
         Debug.DrawRay(transform.position, desiredVelocity, Color.magenta);
@@ -91,12 +113,10 @@ public class SteeringBehaviour : MonoBehaviour
     Vector3 Flee(Vector3 targetPosition)
     {
 
-        Vector3 steeringForce = Vector3.zero;
-
         Vector3 actualVelocity = _rb.linearVelocity;
         Vector3 desiredVelocity = (transform.position - targetPosition).normalized * maxSpeed;
 
-        steeringForce = (desiredVelocity - actualVelocity) * steeringDamp;
+        Vector3 steeringForce = (desiredVelocity - actualVelocity) * steeringDamp;
 
         // Debug draws
         Debug.DrawRay(transform.position, desiredVelocity, Color.magenta);
@@ -110,14 +130,12 @@ public class SteeringBehaviour : MonoBehaviour
     Vector3 SeekAndArrival(Vector3 targetPosition)
     {
 
-        Vector3 steeringForce = Vector3.zero;
-
         Vector3 actualVelocity = _rb.linearVelocity;
 
         float actualSpeed = Mathf.Lerp(0, maxSpeed, Vector3.Distance(targetPosition, transform.position) / arrivalRadius);
         Vector3 desiredVelocity = (targetPosition - transform.position).normalized * actualSpeed;
 
-        steeringForce = (desiredVelocity - actualVelocity) * steeringDamp;
+        Vector3 steeringForce = (desiredVelocity - actualVelocity) * steeringDamp;
 
         // Debug draws
         Debug.DrawRay(transform.position, desiredVelocity, Color.magenta);
@@ -127,6 +145,7 @@ public class SteeringBehaviour : MonoBehaviour
         return steeringForce;
 
     }
+
 
     Vector3 ObstacleAvoidance()
     {
@@ -152,7 +171,7 @@ public class SteeringBehaviour : MonoBehaviour
             _avoidHitPoint = hit.point;
 
             Vector3 desiredVelocity = _avoidPoint - transform.position;
-            Vector3 steeringForce = desiredVelocity - actualVelocity;
+            Vector3 steeringForce = (desiredVelocity - actualVelocity) * steeringDamp;
 
 
             // Debug 1/2
@@ -177,6 +196,31 @@ public class SteeringBehaviour : MonoBehaviour
         }
 
         return Vector3.zero;
+
+    }
+
+    Vector3 Wander()
+    {
+
+        Vector3 velocity = _rb.linearVelocity.normalized;
+        _wanderCenter = transform.position + velocity * wanderDistance;
+
+        _wanderAngle += Random.Range(-wanderRange, wanderRange);
+        Vector3 wanderPoint = _wanderCenter + Quaternion.Euler(0, _wanderAngle, 0) * Vector3.forward * wanderRadius;
+
+        Vector3 desiredVelocity = wanderPoint - transform.position;
+        Vector3 currentVelocity = _rb.linearVelocity;
+        Vector3 seekVelocity = (desiredVelocity - currentVelocity) * steeringDamp;
+
+        // Debug 1/2
+        Debug.DrawRay(transform.position, _wanderCenter - transform.position, Color.green);
+        Debug.DrawRay(_wanderCenter, wanderPoint - _wanderCenter, Color.green);
+        // Debug 2/2
+        Debug.DrawRay(transform.position, currentVelocity, Color.red * new Color(1, 1, 1, 0.75f));
+        Debug.DrawRay(transform.position, desiredVelocity, Color.blue * new Color(1, 1, 1, 0.75f));
+        Debug.DrawRay(transform.position + currentVelocity, seekVelocity, Color.yellow * new Color(1, 1, 1, 0.75f));
+
+        return seekVelocity;
 
     }
 }

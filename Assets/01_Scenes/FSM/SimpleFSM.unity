@@ -17783,8 +17783,32 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 770989415015332088, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
+      propertyPath: fleeFactor
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 770989415015332088, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
+      propertyPath: seekFactor
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 770989415015332088, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
+      propertyPath: wanderRange
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 770989415015332088, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
+      propertyPath: wanderRadius
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 770989415015332088, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
       propertyPath: avoidanceForce
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 770989415015332088, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
+      propertyPath: wanderDistance
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 770989415015332088, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
+      propertyPath: avoidanceFactor
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 770989415015332088, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
       propertyPath: avoidanceRadius
