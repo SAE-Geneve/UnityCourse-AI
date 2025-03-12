@@ -9,11 +9,12 @@ public class RadiusSensor : MonoBehaviour
     [SerializeField] private LayerMask layerMask;
     [SerializeField] private string tagField;
 
+    private Vector3 _center;
+    
     public bool HasDetected { get; set; }
-    public Vector3 Center { get; private set; }
+    public Vector3 Center => _center;
 
     private Transform[] _sendoredItems = Array.Empty<Transform>();
-
 
     private void FixedUpdate()
     {
@@ -22,7 +23,7 @@ public class RadiusSensor : MonoBehaviour
         if (colliders.Length > 0)
         {
             _sendoredItems = colliders.Where(c => c.CompareTag(tagField)).Select(c => c.transform).ToArray();
-            Center = RecalculateCenter();
+            _center = RecalculateCenter();
         }
         else
         {
@@ -45,23 +46,6 @@ public class RadiusSensor : MonoBehaviour
         }
         Gizmos.DrawWireSphere(transform.position, radius);
     }
-
-    // private void OnTriggerEnter(Collider other)
-    // {
-    //     if (other.CompareTag(tagField))
-    //     {
-    //         _sendoredItems.Add(other.transform);
-    //         Center = RecalculateCenter();
-    //     }
-    // }
-    // private void OnTriggerExit(Collider other)
-    // {
-    //     if (other.CompareTag(tagField))
-    //     {
-    //         _sendoredItems.Remove(other.transform);
-    //         Center = RecalculateCenter();
-    //     }
-    // }
 
     private Vector3 RecalculateCenter()
     {

@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 4389968328382186966}
   - component: {fileID: 5738348828241167290}
   - component: {fileID: 4279681014376012487}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: MolotovCocktail
-  m_TagString: Molotov
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -113,9 +113,9 @@ GameObject:
   - component: {fileID: 6264143003020169304}
   - component: {fileID: 4361600222158715048}
   - component: {fileID: 3883227656645312206}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Impact
-  m_TagString: Untagged
+  m_TagString: Molotov
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -466,11 +466,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8793510976239746625, guid: 8fa5143051527e949b0ae174c8430414, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 9064956068904258685, guid: 8fa5143051527e949b0ae174c8430414, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -10,6 +10,7 @@ public class RTSController : MonoBehaviour
     [SerializeField] private GameObject rtsPoint;
     [SerializeField] private Transform characterOriented;
     [SerializeField] private MolotovThrower thrower;
+    [SerializeField] private LayerMask clickLayerMask;
 
     private NavMeshAgent _agent;
     private Animator _animator;
@@ -32,32 +33,33 @@ public class RTSController : MonoBehaviour
         Mouse mouse = Mouse.current;
         Vector2 mousePos = mouse.position.value;
 
-        if (mouse.leftButton.wasPressedThisFrame || mouse.rightButton.wasPressedThisFrame)
-        {
-            if (mousePos.x >= 0 && mousePos.x <= Screen.width &&
-                mousePos.y >= 0 && mousePos.y <= Screen.height)
-            {
-                Ray ray = Camera.main.ScreenPointToRay(mousePos);
-                if (Physics.Raycast(ray, out RaycastHit hit))
-                {
-                    if (mouse.leftButton.wasPressedThisFrame)
-                    {
-                        // Place a point
-                        if (CheckProximity(hit.point) == false)
-                        {
-                            GameObject newPoint = Instantiate(rtsPoint, hit.point, Quaternion.identity);
-                            AddPoint(newPoint.transform);
-                        }
-                    }
-                    if (mouse.rightButton.wasPressedThisFrame)
-                    {
-                        // Orient character AND throw point
-                        characterOriented.rotation = Quaternion.LookRotation(new Vector3(hit.point.x, 0, hit.point.z));
-                        thrower.ThrowMolotov();
-                    }
 
+        if (mousePos.x >= 0 && mousePos.x <= Screen.width &&
+            mousePos.y >= 0 && mousePos.y <= Screen.height)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(mousePos);
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, clickLayerMask))
+            {
+                // Orient character AND throw point
+                characterOriented.rotation = Quaternion.LookRotation(new Vector3(hit.point.x, 0, hit.point.z));
+                
+                if (mouse.leftButton.wasPressedThisFrame)
+                {
+                    // Place a point
+                    if (CheckProximity(hit.point) == false)
+                    {
+                        GameObject newPoint = Instantiate(rtsPoint, hit.point, Quaternion.identity);
+                        AddPoint(newPoint.transform);
+                    }
                 }
+                
+                if (mouse.rightButton.wasPressedThisFrame)
+                {
+                    thrower.ThrowMolotov();
+                }
+
             }
+
         }
 
 

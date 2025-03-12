@@ -31,7 +31,7 @@ public class SteeringBehaviour : MonoBehaviour
     [SerializeField] private float avoidanceForce;
     [SerializeField] private float avoidanceRadius;
 
-    public Transform SteeringTarget { get; set; }
+    public Vector3 SteeringTarget { get; set; }
     public float SeekFactor    {
         get => seekFactor;
         set => seekFactor = value;
@@ -77,9 +77,9 @@ public class SteeringBehaviour : MonoBehaviour
         Vector3 steeringResult = Vector3.zero;
 
         if (seekFactor > 0) 
-            steeringResult += seekFactor * Seek(SteeringTarget.position);
+            steeringResult += seekFactor * Seek(SteeringTarget);
         if (fleeFactor > 0) 
-            steeringResult += fleeFactor * Flee(SteeringTarget.position);
+            steeringResult += fleeFactor * Flee(SteeringTarget);
         if (wanderFactor > 0) 
             steeringResult += wanderFactor * Wander();
         if (avoidanceFactor > 0) 
@@ -93,8 +93,8 @@ public class SteeringBehaviour : MonoBehaviour
         
         if(_rb.linearVelocity.sqrMagnitude > Mathf.Epsilon)
         {
-            Quaternion lookRotation = Quaternion.LookRotation(_rb.linearVelocity);
-            _rb.rotation = Quaternion.Slerp(_rb.rotation, lookRotation, rotationCompensation);
+            Quaternion lookRotation = Quaternion.LookRotation(new Vector3(_rb.linearVelocity.x, 0, _rb.linearVelocity.y));
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationCompensation);
         }
     }
 
@@ -111,10 +111,13 @@ public class SteeringBehaviour : MonoBehaviour
             }
         }
 
-        if (wanderFactor > 0)
+        if (wanderFactor > 0 && _rb != null)
         {
-            Gizmos.DrawWireSphere(_wanderCenter, wanderRadius);
+            Gizmos.DrawWireSphere(transform.position + _rb.linearVelocity.normalized * wanderDistance, wanderRadius);
         }
+        
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawCube(SteeringTarget, new Vector3(1,1,1));
 
     }
 

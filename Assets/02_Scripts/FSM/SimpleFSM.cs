@@ -57,8 +57,10 @@ public class SimpleFSM : MonoBehaviour
             case State.Patrol:
                 break;
             case State.Chase:
+                _motion.SteeringTarget = playerSensor.Target.position;
                 break;
             case State.Flee:
+                _motion.SteeringTarget = molotovSensor.Center;
                 break;
         }
     }
@@ -78,11 +80,9 @@ public class SimpleFSM : MonoBehaviour
                 break;
             case State.Chase:
                 _motion.SeekFactor = 1;
-                _motion.SteeringTarget = playerSensor.Target;
                 break;
             case State.Flee:
                 _motion.FleeFactor = 1;
-                _motion.SteeringTarget.position = molotovSensor.Center;
                 break;
         }
     }
