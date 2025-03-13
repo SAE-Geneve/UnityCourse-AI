@@ -10,12 +10,16 @@ public class ForwardSensor : MonoBehaviour
     [SerializeField] private LayerMask layerMask;
     [SerializeField] private string tag;
 
+    [SerializeField] private Color gizmoColor;
+
     public bool HasDetected;
+    public Vector3 TargetPos = Vector3.zero;
+    
     private Vector3 hitPosition;
 
     public void OnDrawGizmos()
     {
-        Gizmos.color = HasDetected ? Color.green : Color.red;
+        Gizmos.color = HasDetected ? Color.green : gizmoColor;
         Gizmos.DrawWireSphere(transform.position, radius);
         Gizmos.DrawRay(transform.position, Quaternion.Euler(0, angleDetection, 0) * transform.forward * radius);
         Gizmos.DrawRay(transform.position, Quaternion.Euler(0, -angleDetection, 0) * transform.forward * radius);
@@ -44,7 +48,11 @@ public class ForwardSensor : MonoBehaviour
                 if(Physics.Raycast(transform.position, goodObjectDistance, out RaycastHit hit, radius, layerMask))
                 {
                     hitPosition = hit.point;
-                    if(hit.collider == goodObject) HasDetected = true;
+                    if (hit.collider == goodObject)
+                    {
+                        HasDetected = true;
+                        TargetPos = goodObject.transform.position;
+                    }
                 }
             }
         }

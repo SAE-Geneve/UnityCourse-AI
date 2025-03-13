@@ -8748,8 +8748,8 @@ Camera:
   near clip plane: 0.01
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
-  orthographic size: 47.3
+  orthographic: 1
+  orthographic size: 30.6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -11447,13 +11447,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1057b62c698469243abdbe64d4ec20ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 25
+  radius: 40
   angleDetection: 27.6
   layerMask:
     serializedVersion: 2
     m_Bits: 128
   tag: Player
+  gizmoColor: {r: 0, g: 1, b: 0.8193283, a: 1}
   HasDetected: 0
+  TargetPos: {x: 0, y: 0, z: 0}
 --- !u!1001 &1316500480
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12836,7 +12838,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1524891319}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7e12b51c1968ffa4fa27ba326c2a7d55, type: 3}
   m_Name: 
@@ -12851,7 +12853,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1524891319}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a02d2cbd68aef9242a70c9a1022d25ad, type: 3}
   m_Name: 
@@ -13524,6 +13526,10 @@ PrefabInstance:
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 3509390862357459790, guid: 871d807766c506940b60d8360bf4a252, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3509390862357459790, guid: 871d807766c506940b60d8360bf4a252, type: 3}
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
@@ -13612,6 +13618,10 @@ PrefabInstance:
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6363749384332938884, guid: 871d807766c506940b60d8360bf4a252, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6363749384332938884, guid: 871d807766c506940b60d8360bf4a252, type: 3}
       propertyPath: m_Acceleration
       value: 53.3
       objectReference: {fileID: 0}
@@ -13657,7 +13667,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8329907281590994128, guid: 871d807766c506940b60d8360bf4a252, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8358689564158412303, guid: 871d807766c506940b60d8360bf4a252, type: 3}
       propertyPath: m_Layer
@@ -15454,6 +15464,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ca6c1fb6916ade468a1aa0b4d4e8516, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerSensor: {fileID: 1271540472}
+  molotovSensor: {fileID: 1985290373}
+  timerDuration: 5
 --- !u!4 &1806963237 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1186684117298704283, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
@@ -17149,6 +17162,59 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8642765788971354449, guid: 90cbd7ae76860994ba4e3664d7d407d3, type: 3}
   m_PrefabInstance: {fileID: 1892256157}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1985290371
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1985290372}
+  - component: {fileID: 1985290373}
+  m_Layer: 0
+  m_Name: MolotovSensor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1985290372
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1985290371}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1806963237}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1985290373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1985290371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1057b62c698469243abdbe64d4ec20ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 15
+  angleDetection: 180
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  tag: Molotov
+  gizmoColor: {r: 1, g: 0.77747244, b: 0, a: 1}
+  HasDetected: 0
+  TargetPos: {x: 0, y: 0, z: 0}
 --- !u!1001 &2042286561
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18199,7 +18265,27 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 770989415015332088, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
       propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 770989415015332088, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
+      propertyPath: fleeFactor
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 770989415015332088, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
+      propertyPath: seekFactor
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 770989415015332088, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
+      propertyPath: wanderRange
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 770989415015332088, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
+      propertyPath: wanderRadius
+      value: 3.57
+      objectReference: {fileID: 0}
+    - target: {fileID: 770989415015332088, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
+      propertyPath: wanderDistance
+      value: 1.99
       objectReference: {fileID: 0}
     - target: {fileID: 1186684117298704283, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
       propertyPath: m_LocalPosition.x
@@ -18255,6 +18341,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1186684117298704283, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1271540471}
+    - targetCorrespondingSourceObject: {fileID: 1186684117298704283, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1985290372}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3509390862357459790, guid: 0cb4838dbce112d45a36953a5a39a722, type: 3}
       insertIndex: 1
