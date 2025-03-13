@@ -6,6 +6,7 @@ public class SteeringBehaviour : MonoBehaviour
     
     [SerializeField] private float maxSpeed = 10f;
     [SerializeField] private float steeringDamp = 0.5f;
+    [SerializeField] private float rotationCompensation = 0.5f;
     
     [Header("Seek")]
     [SerializeField] private float seekFactor = 1f;
@@ -15,6 +16,13 @@ public class SteeringBehaviour : MonoBehaviour
     
     [Header("Arrival")]
     [SerializeField] private float arrivalRadius = 10f;
+
+    [FormerlySerializedAs("_wanderFactor")]
+    [Header("Wander")]
+    [SerializeField] [Range(0, 1)] private float wanderFactor = 1f;
+    [SerializeField] private float wanderDistance;
+    [SerializeField] private float wanderRadius;
+    [SerializeField] private float wanderRange = 180;
     
     [Header("Avoidance")]
     [SerializeField] [Range(0, 1)] private float avoidanceFactor = 1f;
@@ -27,59 +35,84 @@ public class SteeringBehaviour : MonoBehaviour
     private Vector3 _avoidHitPoint;
     
     private Rigidbody _rb;
-    private GameObject _player;
-    private GameObject _preedator;
 
-    public bool playerHasGun = false;
     
+    // Wander fields
+    private float _wanderAngle;
+    private Vector3 _wanderCenter;
+
+    
+    public Vector3 SteeringTarget { get; set; }
+    public float SeekFactor    {
+        get => seekFactor;
+        set => seekFactor = value;
+    }
+    public float FleeFactor    {
+        get => fleeFactor;
+        set => fleeFactor = value;
+    }
+    public float WanderFactor
+    {
+        get => wanderFactor;
+        set => wanderFactor = value;
+    }
+    public float AvoidanceFactor    {
+        get => avoidanceFactor;
+        set => avoidanceFactor = value;
+    }
+
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
-        _player = GameObject.FindGameObjectWithTag("Player");
-        _preedator = GameObject.FindGameObjectWithTag("Preedator");
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         Vector3 steeringResult = Vector3.zero;
 
-        if (playerHasGun)
-        {
-            steeringResult += 2f * Flee(_player.transform.position);
-        }
-        else
-        {
-            steeringResult += seekFactor * Seek(_player.transform.position);
-        }
-        
-        if(_preedator != null)
-            steeringResult += fleeFactor * Flee(_preedator.transform.position);
-        
-        steeringResult += avoidanceFactor * ObstacleAvoidance();
-        
+        if (seekFactor > 0) 
+            steeringResult += seekFactor * Seek(SteeringTarget);
+        if (fleeFactor > 0) 
+            steeringResult += fleeFactor * Flee(SteeringTarget);
+        if (wanderFactor > 0) 
+            steeringResult += wanderFactor * Wander();
+        if (avoidanceFactor > 0) 
+            steeringResult += avoidanceFactor * ObstacleAvoidance();
+
         _rb.linearVelocity = steeringResult;
-        
+
         // Max speed
-        if(_rb.linearVelocity.magnitude > maxSpeed)
+        if (_rb.linearVelocity.magnitude > maxSpeed)
             _rb.linearVelocity = _rb.linearVelocity.normalized * maxSpeed;
         
+        if(_rb.linearVelocity.sqrMagnitude > Mathf.Epsilon)
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(new Vector3(_rb.linearVelocity.x, 0, _rb.linearVelocity.y));
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationCompensation);
+        }
     }
 
     private void OnDrawGizmos()
     {
-        if (_rb != null && avoidanceFactor > 0)
-        {
+       
             //Gizmos.DrawWireSphere(transform.position, _avoidanceRadius);
             if (Vector3.Distance(_avoidPoint, transform.position) > Mathf.Epsilon && Vector3.Distance(_avoidHitPoint, transform.position) > Mathf.Epsilon)
             {
                 Gizmos.DrawWireSphere(_avoidPoint, avoidanceRadius);
                 Gizmos.DrawWireSphere(_avoidHitPoint, avoidanceRadius);
             }
-        }
+        
+            
+            if (wanderFactor > 0 && _rb != null)
+            {
+                Gizmos.DrawWireSphere(transform.position + _rb.linearVelocity.normalized * wanderDistance, wanderRadius);
+            }
 
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawCube(SteeringTarget, new Vector3(1,1,1));
 
     }
     
@@ -191,6 +224,31 @@ public class SteeringBehaviour : MonoBehaviour
         }
 
         return Vector3.zero;
+
+    }
+    
+    private Vector3 Wander()
+    {
+
+        Vector3 velocity = _rb.linearVelocity.normalized;
+        _wanderCenter = transform.position + velocity * wanderDistance;
+
+        _wanderAngle += Random.Range(-wanderRange, wanderRange);
+        Vector3 wanderPoint = _wanderCenter + Quaternion.Euler(0, _wanderAngle, 0) * Vector3.forward * wanderRadius;
+
+        Vector3 desiredVelocity = wanderPoint - transform.position;
+        Vector3 currentVelocity = _rb.linearVelocity;
+        Vector3 seekVelocity = (desiredVelocity - currentVelocity) * steeringDamp;
+
+        // Debug 1/2
+        Debug.DrawRay(transform.position, _wanderCenter - transform.position, Color.green);
+        Debug.DrawRay(_wanderCenter, wanderPoint - _wanderCenter, Color.green);
+        // Debug 2/2
+        Debug.DrawRay(transform.position, currentVelocity, Color.red * new Color(1, 1, 1, 0.75f));
+        Debug.DrawRay(transform.position, desiredVelocity, Color.blue * new Color(1, 1, 1, 0.75f));
+        Debug.DrawRay(transform.position + currentVelocity, seekVelocity, Color.yellow * new Color(1, 1, 1, 0.75f));
+
+        return seekVelocity;
 
     }
 }
