@@ -15,7 +15,7 @@ public class Pathfinding : MonoBehaviour
 
     [SerializeField] private Door[] doors;
 
-    [SerializeField] private bool bfsSearch;
+    
 
     [SerializeField] private Transform entry;
     [SerializeField] private Transform treasure;
@@ -28,7 +28,11 @@ public class Pathfinding : MonoBehaviour
         new Vector3Int(-1, 0, 0)
     };
 
-    public bool coroutineDone = true;
+    [Header("Research Debug stuff")]
+    [SerializeField] private bool bfsSearch;
+    [SerializeField][Range(0f, 1f)] private float coroutineDelay;
+    [SerializeField][Range(0f, 0.1f)] private float coroutineTimer;
+    [SerializeField][Tooltip("check the check box to start coroutines.")] private bool coroutineDone = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -63,6 +67,8 @@ public class Pathfinding : MonoBehaviour
     private IEnumerator BFS_Search()
     {
 
+        yield return new WaitForSeconds(coroutineDelay);
+        
         Vector3Int startPosition = groundMap.WorldToCell(entry.position);
         Queue<Vector3Int> q = new Queue<Vector3Int>();
         List<Vector3Int> visited = new List<Vector3Int>();
@@ -80,7 +86,7 @@ public class Pathfinding : MonoBehaviour
 
             // Debug
             debugMap.SetTile(startPosition, debugTile);
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSeconds(coroutineTimer);
 
             if (!visited.Contains(startPosition))
             {
@@ -126,7 +132,9 @@ public class Pathfinding : MonoBehaviour
     
     private IEnumerator DFS_Search()
     {
-
+        
+        yield return new WaitForSeconds(coroutineDelay);
+        
         Vector3Int startPosition = groundMap.WorldToCell(entry.position);
         Stack<Vector3Int> q = new Stack<Vector3Int>();
         List<Vector3Int> visited = new List<Vector3Int>();
@@ -144,7 +152,7 @@ public class Pathfinding : MonoBehaviour
 
             // Debug
             debugMap.SetTile(startPosition, debugTile);
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSeconds(coroutineTimer);
 
             if (!visited.Contains(startPosition))
             {
