@@ -330,12 +330,12 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tilemap_packed_10
+      name: big_door_closed
       rect:
         serializedVersion: 2
         x: 160
-        y: 160
-        width: 16
+        y: 112
+        width: 32
         height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -347,28 +347,6 @@ TextureImporter:
       bones: []
       spriteID: fb9924c3fb247dc46b8c0b0eb0db348f
       internalID: 628315817
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tilemap_packed_11
-      rect:
-        serializedVersion: 2
-        x: 176
-        y: 160
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e539a1594f4ab9f419482ed3d19d1d0b
-      internalID: 1558612930
       vertices: []
       indices: 
       edges: []
@@ -594,50 +572,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tilemap_packed_22
-      rect:
-        serializedVersion: 2
-        x: 160
-        y: 144
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d83334dba644c7f4680ade05445a4465
-      internalID: 1874913961
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tilemap_packed_23
-      rect:
-        serializedVersion: 2
-        x: 176
-        y: 144
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b22d37d64f0cf4c48acf89d08afe5d6a
-      internalID: 881828707
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: tilemap_packed_24
       rect:
         serializedVersion: 2
@@ -853,50 +787,6 @@ TextureImporter:
       bones: []
       spriteID: f623aa475617661458cc15d32d7221f9
       internalID: 1371490269
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tilemap_packed_34
-      rect:
-        serializedVersion: 2
-        x: 160
-        y: 128
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6cbb00defd07a4f4a9515902bb05ea66
-      internalID: 1547907296
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tilemap_packed_35
-      rect:
-        serializedVersion: 2
-        x: 176
-        y: 128
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4f06b653f354ac34ca1dfbe1c2122814
-      internalID: 852390843
       vertices: []
       indices: 
       edges: []
@@ -1122,12 +1012,12 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tilemap_packed_46
+      name: big_door_opened
       rect:
         serializedVersion: 2
         x: 160
-        y: 112
-        width: 16
+        y: 144
+        width: 32
         height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -1139,28 +1029,6 @@ TextureImporter:
       bones: []
       spriteID: dc84590a07a982a43bb467adc6084c59
       internalID: 688008210
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tilemap_packed_47
-      rect:
-        serializedVersion: 2
-        x: 176
-        y: 112
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 991f35ea1b5030e43a80474dc42b6912
-      internalID: 111359959
       vertices: []
       indices: 
       edges: []
@@ -3027,13 +2895,14 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      big_door_closed: 628315817
+      big_door_opened: 688008210
       debug_tile: 1176456680
       door_closed: 453506326
       door_opened: -418966294
       entry_stairs: -1133576426
       tilemap_packed_0: -2111466026
       tilemap_packed_1: 2010089893
-      tilemap_packed_10: 628315817
       tilemap_packed_100: -1746810534
       tilemap_packed_102: -44963323
       tilemap_packed_103: -1655543716
@@ -3076,6 +2945,7 @@ TextureImporter:
       tilemap_packed_19: 1740774367
       tilemap_packed_2: -1727112565
       tilemap_packed_20: 1100662012
+      tilemap_packed_21: -1347730815
       tilemap_packed_22: 1874913961
       tilemap_packed_23: 881828707
       tilemap_packed_24: 961305330
@@ -3100,7 +2970,6 @@ TextureImporter:
       tilemap_packed_42: 915077665
       tilemap_packed_43: 125122626
       tilemap_packed_44: 841560516
-      tilemap_packed_46: 688008210
       tilemap_packed_47: 111359959
       tilemap_packed_48: -1287841827
       tilemap_packed_49: -2107265312

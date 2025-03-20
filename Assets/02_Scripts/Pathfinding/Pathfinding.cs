@@ -1,19 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 
 
 public class Pathfinding : MonoBehaviour
 {
 
-    [SerializeField] private Tilemap ground;
-    [SerializeField] private Tilemap debug;
-    [SerializeField] private Tilemap doors;
+    [SerializeField] private Tilemap groundMap;
+    [SerializeField] private Tilemap debugMap;
     [SerializeField] private TileBase debugTile;
 
-    [SerializeField] private Sprite closed;
-    [SerializeField] private Sprite opened;
+    [SerializeField] private Door[] doors;
+
+    [SerializeField] private bool bfsSearch;
 
     [SerializeField] private Transform entry;
     [SerializeField] private Transform treasure;
@@ -26,46 +28,49 @@ public class Pathfinding : MonoBehaviour
         new Vector3Int(-1, 0, 0)
     };
 
+    public bool coroutineDone = true;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-        if (ground.HasTile(ground.WorldToCell(entry.position)))
+        if (groundMap.HasTile(groundMap.WorldToCell(entry.position)))
             Debug.Log("entry stairs on the map");
         else
             Debug.Log("entry stairs NOT on the map");
 
         // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-        if (ground.HasTile(ground.WorldToCell(treasure.position)))
+        if (groundMap.HasTile(groundMap.WorldToCell(treasure.position)))
             Debug.Log("Treasure on the map");
         else
             Debug.Log("Treasure NOT on the map");
 
-        //BFS_Search();
-        //DFS_Search();
-
-        //StartCoroutine("BFS_Search");
-        //debug.ClearAllTiles();
-        StartCoroutine("DFS_Search");
-
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        
+        if (!coroutineDone)
+            return;
 
-
+        debugMap.ClearAllTiles();
+        StartCoroutine(bfsSearch ? "BFS_Search" : "DFS_Search");
+        
     }
 
     private IEnumerator BFS_Search()
     {
 
-        Vector3Int startPosition = ground.WorldToCell(entry.position);
+        Vector3Int startPosition = groundMap.WorldToCell(entry.position);
         Queue<Vector3Int> q = new Queue<Vector3Int>();
         List<Vector3Int> visited = new List<Vector3Int>();
-
-        bool foundTarget = false;
-
+        
+        bool found = false;
+        
+        coroutineDone = false;
+        
         q.Enqueue(startPosition);
 
         do
@@ -74,7 +79,7 @@ public class Pathfinding : MonoBehaviour
             startPosition = q.Dequeue();
 
             // Debug
-            debug.SetTile(startPosition, debugTile);
+            debugMap.SetTile(startPosition, debugTile);
             yield return new WaitForSeconds(0.05f);
 
             if (!visited.Contains(startPosition))
@@ -84,42 +89,52 @@ public class Pathfinding : MonoBehaviour
 
             foreach (Vector3Int neighbour in _neighbours)
             {
+                
                 Vector3Int newPos = startPosition + neighbour;
 
-                if (newPos == ground.WorldToCell(treasure.position))
+                if (newPos == groundMap.WorldToCell(treasure.position))
                 {
                     Debug.Log($"Trouvé : {newPos}");
-                    foundTarget = true;
-                    continue;
-                    //yield return new WaitForEndOfFrame();
+                    found = true;
                 }
 
                 if (!q.Contains(newPos))
                 {
                     if (!visited.Exists(v => v.x == newPos.x && v.y == newPos.y && v.z == newPos.z))
                     {
-                        if (ground.HasTile(newPos))
+                        if(groundMap.HasTile(newPos))
                         {
-                            q.Enqueue(newPos);
+                            Door oneDoor = doors.FirstOrDefault(d => d.GetComponent<SpriteRenderer>().bounds.Contains(newPos));
+                            if (oneDoor != null)
+                            {
+                                if (oneDoor.IsOpen) q.Enqueue(newPos);
+                            }
+                            else
+                            {
+                                q.Enqueue(newPos);
+                            }
                         }
                     }
                 }
             }
 
-        } while (q.Count > 0 && foundTarget == false);
+        } while (q.Count > 0 && !found);
 
         Debug.Log($"Pas Trouvé :(");
 
     }
+    
     private IEnumerator DFS_Search()
     {
 
-        Vector3Int startPosition = ground.WorldToCell(entry.position);
+        Vector3Int startPosition = groundMap.WorldToCell(entry.position);
         Stack<Vector3Int> q = new Stack<Vector3Int>();
         List<Vector3Int> visited = new List<Vector3Int>();
 
-        bool foundTarget = false;
-
+        bool found = false;
+        
+        coroutineDone = false;
+        
         q.Push(startPosition);
 
         do
@@ -128,7 +143,7 @@ public class Pathfinding : MonoBehaviour
             startPosition = q.Pop();
 
             // Debug
-            debug.SetTile(startPosition, debugTile);
+            debugMap.SetTile(startPosition, debugTile);
             yield return new WaitForSeconds(0.05f);
 
             if (!visited.Contains(startPosition))
@@ -140,27 +155,24 @@ public class Pathfinding : MonoBehaviour
             {
                 Vector3Int newPos = startPosition + neighbour;
 
-                if (newPos == ground.WorldToCell(treasure.position))
+                if (newPos == groundMap.WorldToCell(treasure.position))
                 {
                     Debug.Log($"Trouvé : {newPos}");
-                    foundTarget = true;
+                    found = true;
                 }
 
                 if (!q.Contains(newPos))
                 {
                     if (!visited.Exists(v => v.x == newPos.x && v.y == newPos.y && v.z == newPos.z))
                     {
-                        if (ground.HasTile(newPos))
+                        if (groundMap.HasTile(newPos))
                         {
-                            if (doors.HasTile(newPos))
+                            Door oneDoor = doors.FirstOrDefault(d => d.GetComponent<SpriteRenderer>().bounds.Contains(newPos));
+                            if (oneDoor != null)
                             {
-                                Sprite doorSprite = doors.GetSprite(newPos);
-                                if (doorSprite == opened)
-                                {
-                                    q.Push(newPos);
-                                } 
-                                
-                            }else
+                                if(oneDoor.IsOpen) q.Push(newPos);
+                            }
+                            else
                             {
                                 q.Push(newPos);
                             }
@@ -169,7 +181,7 @@ public class Pathfinding : MonoBehaviour
                 }
             }
 
-        } while (q.Count > 0 && foundTarget == false);
+        } while (q.Count > 0 && !found);
 
         Debug.Log($"Pas Trouvé :(");
 
