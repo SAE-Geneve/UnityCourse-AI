@@ -572,7 +572,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tilemap_packed_21
+      name: door_opened
       rect:
         serializedVersion: 2
         x: 144
@@ -1100,7 +1100,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tilemap_packed_45
+      name: door_closed
       rect:
         serializedVersion: 2
         x: 144
@@ -3028,6 +3028,8 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       debug_tile: 1176456680
+      door_closed: 453506326
+      door_opened: -418966294
       entry_stairs: -1133576426
       tilemap_packed_0: -2111466026
       tilemap_packed_1: 2010089893
@@ -3074,7 +3076,6 @@ TextureImporter:
       tilemap_packed_19: 1740774367
       tilemap_packed_2: -1727112565
       tilemap_packed_20: 1100662012
-      tilemap_packed_21: -418966294
       tilemap_packed_22: 1874913961
       tilemap_packed_23: 881828707
       tilemap_packed_24: 961305330
@@ -3099,7 +3100,6 @@ TextureImporter:
       tilemap_packed_42: 915077665
       tilemap_packed_43: 125122626
       tilemap_packed_44: 841560516
-      tilemap_packed_45: 453506326
       tilemap_packed_46: 688008210
       tilemap_packed_47: 111359959
       tilemap_packed_48: -1287841827
